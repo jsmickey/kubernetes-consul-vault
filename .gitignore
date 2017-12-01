@@ -1,0 +1,12 @@
+# Compiled files
+*.tfstate
+*.tfstate.backup
+
+# Module directory
+.terraform/
+
+# Certs and keys
+*.crt
+*.csr
+*.key
+*.pem

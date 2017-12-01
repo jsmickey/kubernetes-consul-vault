@@ -1,0 +1,52 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: vault
+spec:
+  serviceName: vault
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: vault
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - vault
+              topologyKey: kubernetes.io/hostname
+      containers:
+        - name: vault
+          image: "vault:0.9.0"
+          ports:
+          - containerPort: 8200
+            name: http
+          - containerPort: 8201
+            name: backend
+          command: ["vault", "server"]
+          args:
+            - "-config=/vault/config/vault-server.json"
+          env:
+            - name: VAULT_ADDR
+              value: http://0.0.0.0:8200
+          securityContext:
+            capabilities:
+              add:
+                - IPC_LOCK
+          volumeMounts:
+            - name: vault-config
+              mountPath: /vault/config
+            - name: tls
+              mountPath: /etc/tls
+      volumes:
+        - name: vault-config
+          secret:
+            secretName: vault
+        - name: tls
+          secret:
+            secretName: vault
