@@ -8,6 +8,7 @@ Kelsey's Hightower's [Consul-On-Kubernetes](https://github.com/kelseyhightower/c
 #### Prerequisites
  - Kubernetes Cluster</br>
  - Cloudflare's [cfssl and cfssljson](https://github.com/cloudflare/cfssl)</br>
+ - Vault binary</br>
 
 #### Consul Setup
 Create Gossip Encryption Key
@@ -133,7 +134,7 @@ cfssl gencert \
   -profile=default ca/vault-csr.json | cfssljson -bare vault
 ```
 Create Secret
-Update VAULT_CONSUL_TOKEN in secrets/vault-server.json
+ - Update VAULT_CONSUL_TOKEN in secrets/vault-server.json
 ```
 kubectl create secret generic vault \
   --from-file=vault.pem \
