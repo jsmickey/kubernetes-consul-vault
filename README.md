@@ -16,6 +16,7 @@ GOSSIP_ENCRYPTION_KEY=$(consul keygen)
 ```
 Create certificates
 ```
+cfssl gencert -initca ca/ca-csr.json | cfssljson -bare ca
 cfssl gencert \
   -ca=ca.pem \
   -ca-key=ca-key.pem \
@@ -77,18 +78,25 @@ Create agent token and ACL - Do This Once
 ```
 curl \
   --request PUT \
-  --header "X-Consul-Token: "ACL_MASTER_TOKEN" \
-  --data '{ "Name": "Agent Token", "Type": "client", "Rules": "node \"\" { policy = \"write\" } service \"\" { policy = \"read\" }" }' http://127.0.0.1:8500/v1/acl/create
+  --header "X-Consul-Token: $ACL_MASTER_TOKEN" \
+  --data \
+'{ 
+  "Name": "Agent Token", 
+  "Type": "client", 
+  "Rules": "node \"\" { policy = \"write\" } service \"\" { policy = \"read\" }" 
+}' http://127.0.0.1:8500/v1/acl/create
 ```
  - The output of the command is the acl_agent_token
- - Replace ACL_AGENT_TOKEN with the output from the previous command
 
 Add token to each consul server - Do not create new tokens
 ```
 curl \
   --request PUT \
-  --header "X-Consul-Token: ACL_MASTER_TOKEN" \
-  --data '{ "Token": "ACL_AGENT_TOKEN" }' http://127.0.0.1:8500/v1/agent/token/acl_agent_token
+  --header "X-Consul-Token: $ACL_MASTER_TOKEN" \
+  --data \
+'{ 
+  "Token": "$ACL_AGENT_TOKEN" 
+}' http://127.0.0.1:8500/v1/agent/token/acl_agent_token
 ```
 Check each server's logs to make sure they are connected to the cluster
 ```
@@ -103,10 +111,15 @@ The following should be in the logs
 Create ACL for vault
 ```
 curl --request PUT \
-     --header "X-Consul-Token: "ACL_MASTER_TOKEN" \
-     --data '{ "Name": "vault-token", "Type": "client", "Rules": "key \"vault/\" { policy = \"write\" } service \"vault\" { policy = \"write\" } node \"\" { policy = \"write\" } agent \"\" { policy = \"write\" } session \"\" { policy = \"write\" }" }' http://127.0.0.1:8500/v1/acl/create
+     --header "X-Consul-Token: ACL_MASTER_TOKEN" \
+     --data \
+'{ 
+  "Name": "vault-token", 
+  "Type": "client", 
+  "Rules": "key \"vault/\" { policy = \"write\" } service \"vault\" { policy = \"write\" } node \"\" { policy = \"write\" } agent \"\" { policy = \"write\" } session \"\" { policy = \"write\" }" 
+}' http://127.0.0.1:8500/v1/acl/create
 ```
-Output is the CONSUL_TOKEN for Vault
+Output is the VAULT_CONSUL_TOKEN for Vault
 ```
 {"ID":"0e2cf500-e793-65e6-58fd-68fb0e578dc1"}
 ```
@@ -120,6 +133,7 @@ cfssl gencert \
   -profile=default ca/vault-csr.json | cfssljson -bare vault
 ```
 Create Secret
+Update VAULT_CONSUL_TOKEN in secrets/vault-server.json
 ```
 kubectl create secret generic vault \
   --from-file=vault.pem \
