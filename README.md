@@ -8,6 +8,7 @@ Kelsey's Hightower's [Consul-On-Kubernetes](https://github.com/kelseyhightower/c
 #### Prerequisites
  - Kubernetes Cluster</br>
  - Cloudflare's [cfssl and cfssljson](https://github.com/cloudflare/cfssl)</br>
+ - Consul binary</br>
  - Vault binary</br>
 
 #### Consul Setup
@@ -151,9 +152,13 @@ kubectl port-forward vault-0 8200:8200
 ```
 Initialize the server and follow the instructions
 ```
-vault init -tls-skip-verify
-vault unseal -tls-skip-verify
-vault status -tls-skip-verify
+export VAULT_CACERT="ca.pem"
+export VAULT_CLIENT_CERT="vault.pem"
+export VAULT_CLIENT_KEY="vault-key.pem"
+
+vault init
+vault unseal
+vault status
 ```
 Only initialize on vault-0, just unseal on vault-1
 
