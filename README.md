@@ -4,6 +4,8 @@
  - Kubernetes https://kubernetes.io/
 
 Kelsey's Hightower's [Consul-On-Kubernetes](https://github.com/kelseyhightower/consul-on-kubernetes) was used to start this project.  I have built on top of his work and give him credit for getting started.
+<br>
+After getting Vault running, I found this [nomad-on-kubernetes](https://github.com/kelseyhightower/nomad-on-kubernetes) which includes Vault.  My steps do not include node affinity for Vault which is recommended for production.
 
 #### Prerequisites
  - Kubernetes Cluster</br>
@@ -126,12 +128,21 @@ Output is the VAULT_CONSUL_TOKEN for Vault
 {"ID":"0e2cf500-e793-65e6-58fd-68fb0e578dc1"}
 ```
 #### Vault
+Create Vault LoadBalancer
+```
+kubectl apply -f services/vault.yaml
+```
+Fetch external IP address assigned to the load balancer
+```
+VAULT_EXTERNAL_IP=$(kubectl get svc vault -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+```
 Create Certificates
 ```
 cfssl gencert \
   -ca=ca.pem \
   -ca-key=ca-key.pem \
   -config=ca/ca-config.json \
+  -hostname="vault,vault.default.svc.cluster.local,localhost,vault.dc1.consul,vault.service.consul,127.0.0.1,${VAULT_EXTERNAL_IP}" \
   -profile=default ca/vault-csr.json | cfssljson -bare vault
 ```
 Create Secret
@@ -146,12 +157,9 @@ Create StatefulSet
 ```
 kubectl apply -f statefulsets/vault.yaml
 ```
-Connect to vault-0 to initialize and unseal vault cluster
-```
-kubectl port-forward vault-0 8200:8200
-```
 Initialize the server and follow the instructions
 ```
+export VAULT_ADDR="https://${VAULT_EXTERNAL_IP}:8200"
 export VAULT_CACERT="ca.pem"
 export VAULT_CLIENT_CERT="vault.pem"
 export VAULT_CLIENT_KEY="vault-key.pem"
@@ -160,7 +168,6 @@ vault init
 vault unseal
 vault status
 ```
-Only initialize on vault-0, just unseal on vault-1
 
 #### Links
 https://github.com/drud/vault-consul-on-kube</br>

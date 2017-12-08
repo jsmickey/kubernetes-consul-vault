@@ -5,11 +5,10 @@ metadata:
   labels:
     name: vault
 spec:
-  clusterIP: None
   ports:
-    - name: http
+    - name: vault
       port: 8200
-    - name: backend
-      port: 8201
+      protocol: "TCP"
   selector:
     app: vault
+  type: LoadBalancer
