@@ -9,14 +9,14 @@ Update GCP Project and Version in deployments/vault-auth.yaml<br>
 Create Secret for Vault-Demo
 ```
 kubectl create secret generic vault-demo \
-  --from-literal="VAULT_ADDR=https://${VAULT_EXTERNAL_IP}:8200" \
+  --from-literal="vault_addr=https://${VAULT_EXTERNAL_IP}:8200" \
   --from-file=vault.pem \
   --from-file=vault-key.pem \
   --from-file=ca.pem
 ```
 Deploy Vault-Demo Pod
 ```
-kubectl apply -f deployments/vault-auth.yaml
+kubectl apply -f deployments/vault-demo.yaml
 ```
 Connect to the Pod
 ```
