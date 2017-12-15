@@ -20,7 +20,7 @@ https://github.com/drud/vault-consul-on-kube</br>
 https://www.consul.io/docs/guides/acl.html</br>
 https://github.com/arun-gupta/vault-kubernetes</br>
 
-[Setup and Configure Consul](https://github.com/jsmickey/kubernetes-consul-vault/blob/master/docs/consul.md)
-[Setup and Configure Vault](https://github.com/jsmickey/kubernetes-consul-vault/blob/master/docs/vault.md)
-[Setup and Configure Vault Kubernetes Auth Backend](https://github.com/jsmickey/kubernetes-consul-vault/blob/master/docs/kubernetes-auth.md)
-[Get a Secret from Vault via a Pod](https://github.com/jsmickey/kubernetes-consul-vault/blob/master/docs/get-a-secred.md)
+ * [Setup and Configure Consul](https://github.com/jsmickey/kubernetes-consul-vault/blob/master/docs/consul.md)
+ * [Setup and Configure Vault](https://github.com/jsmickey/kubernetes-consul-vault/blob/master/docs/vault.md)
+ * [Setup and Configure Vault Kubernetes Auth Backend](https://github.com/jsmickey/kubernetes-consul-vault/blob/master/docs/kubernetes-auth.md)
+ * [Get a Secret from Vault via a Pod](https://github.com/jsmickey/kubernetes-consul-vault/blob/master/docs/get-a-secret.md)

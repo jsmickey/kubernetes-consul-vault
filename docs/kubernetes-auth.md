@@ -45,4 +45,4 @@ Create A Vault Secret
 vault write secret/foo user=foo password=Password1!
 ```
 
-[Get a Secret from Vault via a Pod](https://github.com/jsmickey/kubernetes-consul-vault/blob/master/docs/get-a-secred.md)
+[Get a Secret from Vault via a Pod](https://github.com/jsmickey/kubernetes-consul-vault/blob/master/docs/get-a-secret.md)
