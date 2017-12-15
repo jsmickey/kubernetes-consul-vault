@@ -1,0 +1,37 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: vault-demo
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: vault-demo
+    spec:
+      serviceAccountName: vault-auth
+      containers:
+      - name: ubuntu
+        image: gcr.io/<gcp_project>/vault-demo:<version>
+        env:
+          - name: VAULT_ADDR
+            valueFrom:
+              secretKeyRef:
+                name: vault-demo
+                key: vault_addr
+          - name: VAULT_CACERT
+            value: /etc/tls/ca.pem
+          - name: VAULT_CLIENT_CERT
+            value: /etc/tls/vault.pem
+          - name: VAULT_CLIENT_KEY
+            value: /etc/tls/vault-key.pem
+        command:
+          - sleep
+          - infinity
+        volumeMounts:
+          - name: tls
+            mountPath: /etc/tls
+      volumes:
+        - name: tls
+          secret:
+            secretName: vault-demo
