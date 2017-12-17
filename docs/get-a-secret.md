@@ -1,4 +1,4 @@
-#### Get A Secret
+## Get A Secret
 Build and Upload a Docker Container
 ```
 docker build . -t vault-demo:<version> -t gcr.io/<gcp_project>/vault-demo:<version>

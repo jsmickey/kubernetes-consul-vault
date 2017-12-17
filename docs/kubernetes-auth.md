@@ -1,4 +1,4 @@
-#### Kubernetes Auth
+## Kubernetes Auth
 Authenticate to vault with the root token
 ```
 vault auth

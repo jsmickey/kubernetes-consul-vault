@@ -1,4 +1,4 @@
-#### Vault
+## Vault
 Create Vault LoadBalancer
 ```
 kubectl apply -f services/vault.yaml

@@ -1,4 +1,4 @@
-#### Consul Setup
+## Consul Setup
 Create Gossip Encryption Key
 ```
 GOSSIP_ENCRYPTION_KEY=$(consul keygen)
