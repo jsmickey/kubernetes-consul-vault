@@ -15,8 +15,9 @@ Create Cluster Role Bindings
 ```
 kubectl apply -f clusterrolebindings/vault-auth.yaml
 ```
-Get ca.crt and Token for vault service account
+Get Kubernetes host, ca.crt, and Token for vault service account
 ```
+KUBEHOST=$(kubectl get svc kubernetes -o json | jq -r '.spec.clusterIP')
 TOKEN_NAME=$(kubectl get serviceaccount vault-auth -o json | jq -r '.secrets[0].name')
 kubectl get secret $TOKEN_NAME -o json | jq -r '.data["ca.crt"]' | base64 --decode > ca.crt
 TOKEN=$(kubectl get secret $TOKEN_NAME -o json | jq -r '.data.token' | base64 --decode)
@@ -25,7 +26,7 @@ Create Vault Config for Kubernetes Authentication
 ```
 vault write auth/kubernetes/config \
   token_reviewer_jwt=$TOKEN \
-  kubernetes_host=https://10.31.240.1 \
+  kubernetes_host=https://$KUBEHOST \
   kubernetes_ca_cert=@ca.crt
 ```
 Create Vault Policy

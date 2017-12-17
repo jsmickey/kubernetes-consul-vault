@@ -1,11 +1,20 @@
 ## Get A Secret
 Build and Upload a Docker Container
+ - GCP_PROJECT only required if using GCP Registry
+ - Version is arbitrary, example uses date variable
 ```
-docker build . -t vault-demo:<version> -t gcr.io/<gcp_project>/vault-demo:<version>
-gcloud docker -- push gcr.io/<gcp_project>/vault-demo:<version>
+cd vault-demo
+GCP_PROJECT=$(gcloud config list --format 'value(core.project)')
+VERSION=$(date "+%Y%m%d%H%M")
+docker build . -t vault-demo:$VERSION -t gcr.io/$GCP_PROJECT/vault-demo:$VERSION
+gcloud docker -- push gcr.io/$GCP_PROJECT/vault-demo:$VERSION
+cd ..
 ```
-Update GCP Project and Version in deployments/vault-auth.yaml<br>
-
+Update GCP Project and Version in deployments/vault-auth.yaml
+```
+sed -i "s#GCP_PROJECT#$GCP_PROJECT#g" deployments/vault-demo.yaml
+sed -i "s#VERSION#$VERSION#g" deployments/vault-demo.yaml
+```
 Create Secret for Vault-Demo
 ```
 kubectl create secret generic vault-demo \
